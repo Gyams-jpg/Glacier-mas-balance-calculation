@@ -803,7 +803,7 @@ try:
 
     x_independent = bin_stats['mean_bin'].values.reshape(-1, 1)
     bin_stats['diff_pred'] = theil_sen_non_agg.predict(x_independent)
-    bin_stats['amb'] = (880 * bin_stats['diff_pred'] * bin_stats['area_average'])
+    bin_stats['amb'] = (880 * bin_stats['average_elev_diff'] * bin_stats['area_average'])
 
     snow_used = False
     if snd11 is not None and snd22 is not None and {'Elev', 'Snow depth at stake(m)'}.issubset(snd11.columns) and {'Elev', 'Snow depth at stake(m)'}.issubset(snd22.columns):
@@ -842,10 +842,10 @@ try:
         bin_stats[f'snow_depth_{previous_year}'] = mid_bin_snd1
         bin_stats[f'snow_depth_{current_year}'] = mid_bin_snd2
         bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] = mid_bin_snd2 - mid_bin_snd1
-        bin_stats['seasonal_MB'] = (880 * bin_stats['diff_pred'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
+        bin_stats['seasonal_MB'] = (880 * bin_stats['average_elev_diff'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
         snow_used = True
     else:
-        bin_stats['seasonal_MB_no_snow'] = (880 * bin_stats['diff_pred'])
+        bin_stats['seasonal_MB_no_snow'] = (880 * bin_stats['average_elev_diff'])
         snow1_fig = None
         snow2_fig = None
 
