@@ -803,6 +803,7 @@ try:
 
     x_independent = bin_stats['mean_bin'].values.reshape(-1, 1)
     bin_stats['diff_pred'] = theil_sen_non_agg.predict(x_independent)
+    bin_stats['average_elev_diff'] = bin_stats["average_elev_diff"].fillna(bin_stats["diff_pred"])
     bin_stats['amb'] = (880 * bin_stats['average_elev_diff'] * bin_stats['area_average'])
 
     snow_used = False
