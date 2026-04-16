@@ -843,17 +843,17 @@ try:
         bin_stats[f'snow_depth_{previous_year}'] = mid_bin_snd1
         bin_stats[f'snow_depth_{current_year}'] = mid_bin_snd2
         bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] = mid_bin_snd2 - mid_bin_snd1
-        bin_stats['seasonal_MB'] = (880 * bin_stats['average_elev_diff'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
+        bin_stats['Annual_MB'] = (880 * bin_stats['average_elev_diff'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
         snow_used = True
     else:
-        bin_stats['seasonal_MB_no_snow'] = (880 * bin_stats['average_elev_diff'])
+        bin_stats['Annual_MB_no_snow'] = (880 * bin_stats['average_elev_diff'])
         snow1_fig = None
         snow2_fig = None
 
     if snow_used:
-        smb = np.sum(bin_stats['seasonal_MB'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
+        smb = np.sum(bin_stats['Annual_MB'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
     else:
-        smb = np.sum(bin_stats['seasonal_MB_no_snow'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
+        smb = np.sum(bin_stats['Annual_MB_no_snow'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
 
     x_agg = bin_stats['mean_bin'].astype(float).values.reshape(-1, 1)
     y_agg = bin_stats['average_elev_diff'].values
@@ -883,11 +883,11 @@ try:
 
     bin_stats['diff_pred2'] = theil_sen_agg.predict(x_agg)
     if snow_used:
-        bin_stats['seasonal_MB2'] = (880 * bin_stats['diff_pred2'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
+        bin_stats['Annual_MB2'] = (880 * bin_stats['diff_pred2'] + bin_stats[f'diff_snow_depth_{previous_year}_{current_year}'] * (400 - 880))
     else:
-        bin_stats['seasonal_MB2'] = (880 * bin_stats['diff_pred2'])
+        bin_stats['Annual_MB2'] = (880 * bin_stats['diff_pred2'])
 
-    smb2 = np.sum(bin_stats['seasonal_MB2'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
+    smb2 = np.sum(bin_stats['Annual_MB2'] * bin_stats['area_average']) / np.sum(bin_stats['area_average'])
 
     amb_array = [smb, smb2]
     labels = ['Non-aggregated data', 'Aggregated data']
@@ -926,7 +926,7 @@ try:
     bin_stats['Elevation Band'] = bin_stats['elevation_bin'].apply(lambda iv: f"{int(iv.left)}-{int(iv.right)} m" if pd.notna(iv) else None)
     bin_stats = bin_stats.merge(df_result_map, on='Elevation Band', how='left')
     bin_stats['Perimeter'] = bin_stats['Boundary Length (m)']
-    bin_stats['Area_Average_MB'] = (bin_stats['seasonal_MB2'] * bin_stats['area_average']) / (np.sum(bin_stats['area_average']))
+    bin_stats['Area_Average_MB'] = (bin_stats['Annual_MB2'] * bin_stats['area_average']) / (np.sum(bin_stats['area_average']))
 
     bin_stats.columns = bin_stats.columns.str.strip().str.replace('\xa0', ' ', regex=True)
     bin_stats['Absolute bg'] = abs(bin_stats['Area_Average_MB'])
